@@ -1,0 +1,11 @@
+
+
+1. CConsole.h         : Contain the main class console, and their functions, and caracteristics.
+2. CConsole_utility.h : Contain the utility related to class console::Console.
+3. Geometry.h         : New header file that generalized many concepts of geometry
+                        3.1 Coordinate and Point system in 2d and 3d as point and 
+						3.2 Segment and Line between two points 
+						3.3 Rectangle as Rect about area of rectangle
+						3.4 Triangle as area of triangle
+						3.5 Functions of distance, module, contain, make_segment, make_rect
+						    direction, Norm2 and Norm, perpendicularTo, 
