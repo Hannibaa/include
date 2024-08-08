@@ -4,7 +4,7 @@
     // 
     //    THIS MY PERSONAL LIBRARY THAT I MADE FOR SOME OF MY PROJECT
     //    1. first_type<Ts...>
-    //    2. 
+    //    2. are_same_v<Ts...>
     // 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
