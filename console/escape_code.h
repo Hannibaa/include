@@ -50,6 +50,7 @@
 #include <include/console/Unicode_table.h>
 #include "include/maths/function_utility.h"
 
+#define WIN32_LEAN_AND_MEAN
  //////////////////////////////////////////////////////////////////////////////////////////////////////////
  // 
  //    Function to initialize the mode of color in release console
@@ -66,7 +67,30 @@ void SetGraphicConsoleMode() {
 	SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), d | 0x0002);
 }
 
+
+void WindowsEmulateVT100Terminal() {
+	static bool done = false;
+	if (done)
+		return;
+	done = true;
+
+	// Enable VT processing on stdout and stdin
+	auto stdout_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	DWORD out_mode = 0;
+	GetConsoleMode(stdout_handle, &out_mode);
+
+	// https://docs.microsoft.com/en-us/windows/console/setconsolemode
+	const int enable_virtual_terminal_processing = 0x0004;
+	const int disable_newline_auto_return = 0x0008;
+	out_mode |= enable_virtual_terminal_processing;
+	out_mode |= disable_newline_auto_return;
+
+	SetConsoleMode(stdout_handle, out_mode);
+}
+
 #define set_escape_mode             SetGraphicConsoleMode
+
 
 
  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,9 +128,16 @@ using uchar = unsigned char;
 #define _B(b)                     (int(b))
 #define RGB2INT(r,g,b)            (int(_R(r)|_G(g)|_B(b)))
 
+// ASCII CODE FOR KEYBOARD USING LIBRARY CONIO.H
+#define UP          72
+#define DW          80
+#define LEFT        75
+#define RIGHT       77
+#define BSPACE       32
 
 
 #define end_       '\n'
+#define END        '\n'
 #define BELL       '\a'
 #define hTAB       '\t'
 #define vTAB       '\v'
@@ -264,8 +295,8 @@ using uchar = unsigned char;
 #define CELL(SIZE,LeftOrRight,STR)   std::setw(SIZE) << std::LeftOrRight << STR 
 #define SPACE(N)                     std::string(N,' ').c_str()
 #define WSPACE(N)                    std::wstring(N,' ').c_str()
-#define WREPEAT(N,WCHAR)             std::wstring(N,WCHAR).c_str()
-#define REPEAT(N,CHAR)               std::string(N,CHAR).c_str()
+#define WREPEAT(N,_WCHAR)            std::wstring(N,_WCHAR).c_str()
+#define REPEAT(N,_CHAR)              std::string(N,_CHAR).c_str()
 #define _COLOR_FG256(i)                "\x1b[38;5;" << _CSTR(i) << "m"
 #define _wCOLOR_FG256(i)              L"\x1b[38;5;" << _CwSTR(i) << L"m"
 #define _COLOR_BG256(i)                "\x1b[48;5;" << _CSTR(i) << "m"
