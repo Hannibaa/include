@@ -30,7 +30,7 @@
 #include <fstream>
 #include <random>
 #include <map>
-#include "MyLib\random_generator.h"
+#include "include/random/random_generator.h"
 
 
 
@@ -547,6 +547,8 @@ namespace Str{
 		}
 
 		std::string tempString;
+		// reserve 
+		tempString.reserve(fs::file_size(filename) + 1);
 
 		while (!ifs.eof()) {
 			char c{};
@@ -559,9 +561,29 @@ namespace Str{
 		return tempString;
 	}
 
+	std::string load_file_to_string(const fs::path& filename, size_t size) {
+		
+		std::ifstream ifs{ filename };
+
+		if (!ifs.is_open()) {
+			throw std::runtime_error("could not open file : " + filename.string());
+		}
+
+		// string buffer
+		std::string buffer(size, '\0');
+
+		// read the specified number of bytes into the string
+		ifs.read(&buffer[0], size * sizeof(char));
+
+		// resize the string to the actual number of 
+		ifs.close();
+		return buffer;
+	}
+
 	template<typename Tchar>
 	std::basic_string<Tchar> load_file_to_string(std::ifstream& ifile);  // ToDo
 
+	void save_string_to_file(std::string& str, std::ofstream& ofile);    // ToDo
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	//
 	//                  PRINT VECTOR OF STRING 
