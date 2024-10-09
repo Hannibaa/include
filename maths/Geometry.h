@@ -6,8 +6,22 @@
 
 // Constant pi
 constexpr inline float Pi = static_cast<float>(std::numbers::pi);
+constexpr inline float Pi2 = Pi / 2.f;
+
 
 namespace geom2d {
+
+	// Rotating inside wstring or string as it is string
+
+	int _rot(int n, int lx) {
+		int k = n % lx;
+		return lx * (lx - 1) - lx * k + (n - k) / lx;
+	}
+
+	int _rot90d(int N, int lx, int ly) {
+		int k = N % ly;
+		return (N - k) / ly + (ly - 1 - k) * lx;
+	}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,6 +40,12 @@ namespace geom2d {
 
 		Point2d(T _x = T{}, T _y = T{})
 			: x{ _x }, y{ _y }
+		{}
+
+		template<typename CoordType>
+		Point2d(const CoordType& coord)
+			:x{static_cast<T>(coord.X)}
+			,y{static_cast<T>(coord.Y)}
 		{}
 
 		template<typename U>
@@ -65,8 +85,6 @@ namespace geom2d {
 		return Point2d<T>(scalar * point.x, scalar * point.y);
 	}
 
-	template<typename T>
-	using Vector2d = Point2d<T>;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 
@@ -93,8 +111,6 @@ namespace geom2d {
 		Vector d;
 	};
 
-	template<typename T>
-	using line = Line<Vector2d<T>>;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 
@@ -154,7 +170,8 @@ namespace geom2d {
 			return contain(p.x, p.y);
 		}
 
-		bool contain(const Rect<T>& rect) const {
+		// collision
+		bool is_collid(const Rect<T>& rect) const {
 			return contain(rect.x, rect.y) ||
 				contain(rect.x + rect.dx - 1, rect.y) ||
 				contain(rect.x, rect.y + rect.dy - 1) ||
@@ -170,6 +187,7 @@ namespace geom2d {
 		Rect expand(const T& d) {
 			return Rect(x - d, y - d, dx + T(2) * d, dy + T(2) * d);
 		}
+
 	};
 
 	typedef Rect<float>        fRect;                           // 
@@ -179,7 +197,7 @@ namespace geom2d {
 
 	// Make vector from two points
 	template<typename T>
-	Vector2d<T>  make_vector(const Point2d<T>& p1, const Point2d<T>& p2) {
+	Point2d<T>  make_vector(const Point2d<T>& p1, const Point2d<T>& p2) {
 		return p2 - p1;
 	}
 
@@ -232,13 +250,13 @@ namespace geom2d {
 	template<typename Vector>
 	constexpr bool isParpendicular(const Vector& v1, const Vector& v2) {
 
-		return true;
+		return (v1.x * v2.x + v1.y * v2.y) == static_cast<typename Vector::value_type>(0);
 	}
 
 	template<typename Vector>
 	constexpr bool isParallel(const Vector& v1, const Vector& v2) {
 
-		return true;
+		return v1.x * v2.y - v1.y * v2.x == static_cast<typename Vector::value_type>(0);
 	}
 
 	template<typename Point>
@@ -259,13 +277,23 @@ namespace geom2d {
 		return {};
 	}
 
-	template<typename Point, typename T = typename Point::value_type>
-	constexpr T distance(const Point& p, const line<T>& line) {
 
-		return {};
-	}
+
 }
 
 
+// predefined type : 
+// 1. Vectors
+using fVec2 = geom2d::Point2d<float>;
+using iVec2 = geom2d::Point2d<int>;
+using uiVec2 = geom2d::Point2d<unsigned int>;
+using sVec2 = geom2d::Point2d<short>;
+using usVec2 = geom2d::Point2d<unsigned short>;
 
+// 2. Rectangles
 
+using iRect = geom2d::Rect<int>;
+using fRect = geom2d::Rect<float>;
+using sRect = geom2d::Rect<short>;
+using usRect = geom2d::Rect<unsigned short>;
+using uiRect = geom2d::Rect<unsigned int>;
