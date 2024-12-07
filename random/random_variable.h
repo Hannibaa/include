@@ -1,5 +1,5 @@
 #pragma once
-#include "MyLib\random_generator.h"
+#include "include/random/random_generator.h"
 #include <chrono>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,6 +49,10 @@ namespace RV {
 		std::vector<T> m_vector;
 		RNG::RG<size_t> random;
 
+		typedef void(*Function)();
+
+		Function       _sleepFunc = +[]() {};
+
 	public:
 		//RVec()
 		//	:m_vector{}
@@ -81,8 +85,19 @@ namespace RV {
 			int damn[] = { ((void)m_vector.push_back(T(ts)), 0)... };
 		}
 
+		void set_sleepFunction(Function _func)
+		{
+			_sleepFunc = _func;
+		}
+
 		T operator() () {
+			//std::this_thread::sleep_for(std::chrono::milliseconds(400));
+			_sleepFunc();
 			return m_vector[random()];
+		}
+
+		operator T () {
+			return this->operator()();
 		}
 
 		void push_back(const T& value) {

@@ -27,7 +27,7 @@ namespace  RNG {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	template<typename Type = void>
-	class RG {
+	class RG { 
 		static_assert(std::is_arithmetic_v<Type>, "Type should be arithmetic type");
 		using T = typename std::conditional<std::is_integral_v<Type>, Type, int>::type;
 		using F = typename std::conditional<std::is_floating_point_v<Type>, Type, float>::type;
