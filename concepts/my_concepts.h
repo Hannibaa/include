@@ -5,7 +5,9 @@
 
 // some metaprogramming 
 
-namespace my_concept {
+namespace Concept {
+
+
 
 #define REQUERES(_Class, _Type ,_Function)  requires(_Class C,_Type value){ C._Function(value);}
 #define MAKE_HAS_FUNCTION(_Class, _Type, _Function) template<typename _Class, typename _Type> \
@@ -73,6 +75,45 @@ namespace my_concept {
 		C.push_back(std::declval<typename Container::value_type&>());
 	};
 
-}
+	namespace Coordinate {
+		// 0. hase composante x, y ro X, Y
+		template<typename Coord>
+		concept has_XY = requires(Coord coord)
+		{
+			coord.x;
+			coord.y;
+		};
 
-namespace Concept = my_concept;
+		template<typename Coord>
+		concept has_xy = requires(Coord coord)
+		{
+			coord.X;
+			coord.Y;
+		};
+	}
+
+	namespace Rectangle {
+		template<typename RECT>
+		concept is_rect = requires(RECT rect)
+		{
+			rect.x;
+			rect.y;
+			rect.dx;
+			rect.dy;
+		};
+	}
+
+	// 1. check if class has x and y variable or X, y
+	template<typename V>
+	concept is_geometrical_vector = requires(V v)
+	{
+		typename V::value_type;
+		requires std::is_arithmetic_v<typename V::value_type>;
+		v.x;
+		v.y;
+		v + v;
+		v - v;
+		{ (v * v) } -> std::convertible_to<typename V::value_type>;
+	};
+
+}
