@@ -118,7 +118,7 @@ namespace   geom2d {
 				contain(rect.x + rect.dx - 1, rect.y + rect.dy - 1);
 		}
 
-		// shrink and expand by equal distance
+		// shrink and expand by equal distance and delate
 
 		Rect shrink(const T& d) const {
 			return Rect(x + d, y + d, dx - T(2) * d, dy - T(2) * d);
@@ -128,6 +128,13 @@ namespace   geom2d {
 			return Rect(x - d, y - d, dx + T(2) * d, dy + T(2) * d);
 		}
 
+		Rect delate(const T& _dx, const T& _dy) {
+			return Rect(x,y,dx + _dx, dy +_dy);
+		}
+
+		Rect delate(const Vector2d<T>& d) {
+			return delate(d.x, d.y);
+		}
 	};
 
 }
