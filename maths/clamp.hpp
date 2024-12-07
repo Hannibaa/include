@@ -2,6 +2,7 @@
 #include <utility>
 #include <array>
 #include <include/metaprogramming/my_metaprog.h>
+#include <include/concepts/my_concepts.h>
 
 namespace math {
 
@@ -17,6 +18,24 @@ namespace math {
 	{
 		if (x < min) x = min;
 		if (x >= max) x = max;
+	}
+
+	template<typename TVector2d, typename T = typename TVector2d::value_type>
+		requires Concept::Coordinate::has_xy<TVector2d>
+	void clamp(TVector2d& p, const TVector2d& p_min, const TVector2d& p_max)
+	{
+		clamp(p.x, p_min.x, p_max.x);
+		clamp(p.y, p_min.y, p_max.y);
+	}
+
+
+	template<typename VECTOR, typename RECT, typename T = typename VECTOR::value_type>
+	//	requires Concept::Coordinate::has_xy<VECTOR> && Concept::Rectangle::is_rect<RECT>
+	//&& std::convertible_to<typename RECT::value_type, T>
+		void clamp(VECTOR& v, const RECT& rect)
+	{
+		clamp(v.x, rect.x, rect.x + rect.dx);
+		clamp(v.y, rect.y, rect.y + rect.dy);
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
