@@ -28,6 +28,7 @@
 
 
 #pragma once
+#include <iostream>
 #include <string>
 #include <cstring>
 #include <sstream>
@@ -63,6 +64,9 @@ namespace fs = std::filesystem;
 
 #endif // !CHAR_DEFINITION
 
+#ifdef END
+#undef END
+#endif // END
 
 
 namespace sfl {
@@ -207,6 +211,10 @@ namespace sfl {
 			return str;
 		}
 
+		std::string wstr_to_str2(const std::wstring& wstr) {
+			return std::string(wstr.begin(), wstr.end());
+		}
+
 		// string to wstring
 		std::wstring str_to_wstr(const std::string& str) {
 			std::wstring wstr(str.size(), L'\0');
@@ -217,7 +225,7 @@ namespace sfl {
 			return wstr;
 		}
 
-		std::string wstr_to_str2(const std::wstring& wstr) {
+		std::string wstr_to_str3(const std::wstring& wstr) {
 			std::string str;
 			str.reserve(wstr.size() * sizeof(std::wstring::value_type));
 
@@ -231,7 +239,7 @@ namespace sfl {
 			return str;
 		}
 
-		std::string wstr_to_str3(const std::wstring& wstr) {
+		std::string wstr_to_str4(const std::wstring& wstr) {
 			std::string str;
 			str.reserve(wstr.size() * sizeof(std::wstring::value_type));
 
@@ -260,6 +268,13 @@ namespace sfl {
 			return str;
 		}
 
+
+		// conversion of vector of Tchar to basic_string<Tchar>
+		template<typename Tchar>
+		std::basic_string<Tchar> vector2string(const std::vector<Tchar>& buffer)
+		{
+			return std::basic_string<Tchar>(buffer.begin(), buffer.end());
+		}
 
 	}// namespace conv : conversion
 
@@ -472,6 +487,13 @@ namespace sfl {
 
 		}
 
+
+		// remove blank from begining and end of strings
+
+		void remove_blank_eb(std::string& str) {
+			remove_char_eb(str, std::isblank);
+		}
+
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		//
 		//                   REVERSE STRING AND RANDOM ARRANGEMENT OF STRING
@@ -491,7 +513,11 @@ namespace sfl {
 
 	} // namespace trait
 
+	// TODO : string transformation and input and outpu
+	template<typename STRING, typename STRINGS>
+	void get_lines(const STRING&, STRINGS&) {
 
+	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
