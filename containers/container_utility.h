@@ -21,6 +21,7 @@
 #pragma once
 #include <concepts>
 #include <string_view>
+#include <forward_list>
 
 #include "MyLib/Headers/my_concepts.h"
 #include "MyLib/random_generator.h"
@@ -45,6 +46,31 @@
 
 
 namespace Container {
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 
+	//    Make container abb to take any elements   
+	// 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	template<typename Container, typename T = typename Container::value_type>
+	void Merge(Container& container, T element) {
+		container.push_back(element);
+	};
+
+	template<typename Container>
+	void Merge(Container& container, Container& elements) {
+		for (auto& e : elements) container.push_back(e);
+	}
+
+	// Turn set of element to vector
+	template<typename Container, typename ... Args>
+	// TODO : add requirement Container::value_type same as Args...
+	Container unpack(Args...args) {
+		Container vec;
+		(Merge(vec, std::move(args)), ...);
+		return vec;
+	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 
@@ -75,6 +101,41 @@ namespace Container {
 			if (c == old_value) c = new_value;
 		}
 
+	}
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 
+    //    SWAP EN ELEMENT IN FORWARD LIST TO FRONT
+    // 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+	template<typename T>
+	void swap_tofront(std::forward_list<T>& list, const T& element)
+	{
+		// check element if is it not in front
+		if (list.front() != element) {
+
+			// create two current and previous iterator
+			std::forward_list<int>::iterator  prev = list.before_begin();
+			auto curr = list.begin();
+
+			// find element and it's previous element 
+			while (curr != list.end() && *curr != element)
+			{
+				prev = curr;
+				++curr;
+			}
+
+			// if element fond move it to front
+			if (curr != list.end())
+			{
+				// remove the element from its current position
+				list.erase_after(prev);
+				// insert the element at the front
+				list.push_front(element);
+			}
+		}
 	}
 
 
